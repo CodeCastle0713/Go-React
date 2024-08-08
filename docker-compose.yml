@@ -1,0 +1,36 @@
+
+version: '3.1'
+
+volumes:
+  mongo_data:
+
+services:
+
+  mongo:
+    image: mongo
+    restart: always
+    env_file:
+      - api/.env
+    volumes:
+        - ./mongo_data:/data/db
+    ports:
+      - "27017:27017"
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - "8081:8081"
+    env_file:
+      - api/.env
+     
+  api:
+    build: .
+    image: go-mongo-api
+    restart: always
+    ports:
+      - 4747:4747
+    links:
+      - mongo
+    env_file:
+      - api/.env
